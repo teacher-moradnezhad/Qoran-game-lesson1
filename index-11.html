@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>کارآگاهان قرآنی — ۵ مأموریت</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700;800;900&family=Amiri+Quran&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --wood:#2b1d13; --gold:#e0b25e; --gold-bright:#ffd166;
+    --red:#e14b4b; --green:#3ee394;
+    --m1:#4d8dff; --m2:#a06bff; --m3:#3ee394; --m4:#ff9a4d; --m5:#ffd166;
+    --mission-color: var(--m1);
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{ margin:0; padding:0; width:100%; height:100%; font-family:'Vazirmatn',sans-serif;
+    background:var(--wood); color:#f3e6c8; overflow:hidden; touch-action:none; user-select:none; }
+  #app{ position:fixed; inset:0; width:100%; height:100%; }
+  .screen{ position:absolute; inset:0; display:none; overflow-y:auto; }
+  .screen.active{ display:flex; flex-direction:column; }
+
+  /* ===== Welcome ===== */
+  #welcome{ align-items:center; justify-content:center; text-align:center; padding:24px 16px;
+    background: radial-gradient(ellipse at 30% 20%, rgba(224,178,94,.18), transparent 55%),
+      radial-gradient(ellipse at 80% 80%, rgba(224,178,94,.12), transparent 55%),
+      linear-gradient(160deg,#2b1d13 0%,#1a1109 100%); }
+  .welcome-content{ max-width:480px; width:100%; }
+  .astro-icon{ font-size:60px; animation: floaty 3s ease-in-out infinite; }
+  @keyframes floaty{ 0%,100%{transform:translateY(0) rotate(-3deg);} 50%{transform:translateY(-12px) rotate(3deg);} }
+  h1.bismillah{ font-size:22px; font-weight:800; color:var(--gold-bright); margin:8px 0 4px; text-shadow:0 0 12px rgba(255,209,102,.4);}
+  .school-info{ font-size:14px; line-height:1.9; color:#dcc79a; margin:6px 0 18px;}
+  .school-info b{ color:#fff; }
+  h2.game-title{ font-size:clamp(22px,6vw,32px); font-weight:900; margin:6px 0 10px;
+    background: linear-gradient(90deg,#e0b25e,#ffd166); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .game-desc{ font-size:15px; color:#e6d7b0; line-height:1.9; margin:0 auto 22px; max-width:420px;}
+  .mission-chips{ display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin-bottom:22px; }
+  .mission-chip{ font-size:11.5px; font-weight:700; padding:6px 10px; border-radius:99px; color:#1a1109; }
+  .btn-row{ display:flex; gap:12px; flex-wrap:wrap; justify-content:center; }
+  .btn{ font-family:inherit; border:none; cursor:pointer; font-size:16px; font-weight:800; color:#2a1c10;
+    padding:15px 24px; border-radius:16px; transition:transform .15s ease; }
+  .btn:active{ transform:scale(.95); }
+  .btn-primary{ background: linear-gradient(135deg,#ffd166,#e0b25e); box-shadow:0 8px 24px rgba(224,178,94,.4); }
+  .btn-secondary{ background: rgba(255,255,255,.1); color:#f3e6c8; border:1.5px solid rgba(255,255,255,.25); }
+  .btn-ghost{ background:transparent; border:1.5px solid rgba(255,255,255,.3); color:#f3e6c8; }
+
+  /* ===== Study ===== */
+  #study{ background: linear-gradient(180deg,#241608,#1a1109); }
+  .study-nav{ position:sticky; top:0; z-index:5; display:flex; gap:6px; padding:12px 10px; overflow-x:auto;
+    background: rgba(26,17,9,.94); backdrop-filter: blur(6px); border-bottom:1px solid rgba(255,255,255,.08); }
+  .study-nav button{ flex-shrink:0; font-family:inherit; font-size:13px; font-weight:700; padding:9px 14px;
+    border-radius:12px; border:1.5px solid rgba(255,255,255,.15); background:rgba(255,255,255,.05); color:#e6d7b0; cursor:pointer; white-space:nowrap; }
+  .study-nav button.active{ background: linear-gradient(135deg,#e0b25e,#ffd166); color:#2a1c10; border-color:transparent; }
+  .study-body{ padding:16px 14px 40px; max-width:680px; margin:0 auto; width:100%; }
+  .study-section{ display:none; }
+  .study-section.active{ display:block; animation: fadein .3s ease; }
+  @keyframes fadein{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);} }
+  .study-h{ font-size:19px; font-weight:800; color:var(--gold-bright); margin:4px 0 16px; text-align:center;}
+  .rule-card{ background: rgba(255,255,255,.05); border:1.5px solid rgba(224,178,94,.3); border-radius:14px; padding:14px 16px; margin-bottom:12px;}
+  .rule-card h4{ margin:0 0 6px; font-size:14px; color:var(--gold-bright);}
+  .rule-card .arabic{ font-family:'Amiri Quran', serif; font-size:28px; color:#fff; }
+  .rule-card p{ margin:6px 0 0; font-size:13px; color:#dcc79a; line-height:1.7;}
+  .phrase-card{ background: rgba(255,255,255,.05); border:1.5px solid rgba(255,255,255,.12); border-radius:14px; padding:16px; margin-bottom:12px; text-align:center;}
+  .phrase-card .arabic{ font-family:'Amiri Quran', serif; font-size:32px; color:#fff; line-height:2; }
+  .phrase-card .arabic .bad{ color:var(--red); text-decoration: underline wavy var(--red); }
+  .phrase-card p{ font-size:12.5px; color:#dcc79a; margin-top:8px;}
+  .verse-block{ text-align:center; background: rgba(255,255,255,.05); border:1.5px solid rgba(224,178,94,.3); border-radius:16px; padding:20px; margin-bottom:16px;}
+  .verse-block .arabic{ font-family:'Amiri Quran', serif; font-size:30px; color:#fff; line-height:2.1;}
+  .verse-block .translation{ font-size:15px; color:var(--gold-bright); margin-top:12px; font-weight:700;}
+  .points-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:10px; }
+  .point-card{ background: rgba(255,209,102,.08); border:1px solid rgba(255,209,102,.25); border-radius:12px; padding:10px; text-align:center; font-size:13px; }
+  .quote-card{ background: rgba(255,255,255,.05); border-right:4px solid var(--gold-bright); border-radius:10px; padding:14px 16px; margin-bottom:12px; }
+  .quote-card p{ margin:0; font-size:14px; line-height:1.8; color:#f3e6c8; }
+  .quote-card span{ display:block; margin-top:6px; font-size:12px; color:#dcc79a; }
+
+  /* ===== Game ===== */
+  #game{ background: radial-gradient(ellipse at 50% 0%, #3a2717, #1a1109 70%); position:relative; transition: background .5s ease; }
+  #particleCanvas{ position:absolute; inset:0; width:100%; height:100%; pointer-events:none; z-index:5; }
+  .hud{ position:relative; z-index:10; display:flex; align-items:center; justify-content:space-between; padding: calc(10px + env(safe-area-inset-top,0px)) 14px 4px; }
+  .hud-left{ display:flex; flex-direction:column; gap:3px; }
+  .hearts{ font-size:15px; letter-spacing:1px; }
+  .vcount{ font-size:11px; color:#dcc79a; font-weight:700; }
+  .hud-mid{ text-align:center; }
+  .score-val{ font-size:21px; font-weight:900; color:var(--gold-bright); }
+  .score-label{ font-size:9px; color:#dcc79a; }
+  .hud-right button{ font-size:18px; background:rgba(255,255,255,.12); border:1.5px solid rgba(255,255,255,.25); border-radius:12px; padding:7px 9px; cursor:pointer; color:#fff; }
+
+  .mission-badge{ text-align:center; font-size:12px; font-weight:800; padding:5px 0; color:#1a1109;
+    background: var(--mission-color); margin: 0 14px; border-radius:10px; }
+  .timer-wrap{ position:relative; z-index:10; margin: 6px 14px 0; height:7px; background:rgba(255,255,255,.12); border-radius:99px; overflow:hidden;}
+  .timer-fill{ height:100%; width:100%; background: var(--green); transition: width .1s linear, background .3s; }
+  .progress-wrap{ position:relative; z-index:10; margin:5px 14px 0; height:4px; background:rgba(255,255,255,.08); border-radius:99px; overflow:hidden;}
+  .progress-fill{ height:100%; background: var(--gold-bright); width:0%; transition: width .3s ease; }
+
+  .mission-stage{ position:relative; z-index:6; flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:14px 16px 30px; text-align:center; gap:14px; }
+  .mission-hint{ font-size:13px; color:#dcc79a; }
+  .verse-display{ font-family:'Amiri Quran', serif; font-size: clamp(26px,7.5vw,42px); line-height:2.2; color:#fdf6e3; }
+  .verse-meaning{ font-size:12.5px; color:#dcc79a; }
+  .verse-feedback{ font-size:14px; font-weight:800; min-height:20px; }
+
+  /* Mission 1: letter buttons */
+  .m1-letters{ display:flex; flex-wrap:wrap; gap:10px; justify-content:center; direction:rtl; }
+  .m1-letter{ min-width:60px; min-height:60px; font-family:'Amiri Quran', serif; font-size:26px; border-radius:14px; border:2px solid rgba(255,255,255,.2);
+    cursor:pointer; font-weight:700; transition: transform .12s ease; }
+  .m1-letter.target{ background: rgba(255,209,102,.28); color:#ffd166; border-color: rgba(255,209,102,.6); }
+  .m1-letter.normal{ background: rgba(255,255,255,.08); color:#fdf6e3; }
+  .m1-letter:active{ transform: scale(.9); }
+  .m1-letter.done{ background: var(--green) !important; color:#0c2a1c !important; opacity:.7; pointer-events:none; }
+  .m1-letter.wrongflash{ animation: wflash .35s ease; }
+  @keyframes wflash{ 0%,100%{background:rgba(255,255,255,.08);} 40%{ background: var(--red); } }
+
+  /* Mission 2 & 3: option buttons */
+  .opt-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; width:100%; max-width:380px; }
+  .opt-btn{ font-family:'Amiri Quran', serif; font-size:26px; min-height:58px; border:none; border-radius:14px;
+    background: rgba(255,255,255,.08); color:#fdf6e3; cursor:pointer; font-weight:700; border:2px solid rgba(255,255,255,.15); }
+  .opt-btn.correct{ background: var(--green) !important; color:#0c2a1c !important; }
+  .opt-btn.wrong{ background: var(--red) !important; }
+
+  /* Mission 3: letter tour highlight */
+  .verse-display .tour-letter{ display:inline-block; }
+  .verse-display .tour-letter.tour-active{ color: var(--gold-bright); transform: scale(1.3); display:inline-block; transition: all .2s ease; }
+
+  /* Mission 4: bird */
+  .bird-wrap{ position:relative; width:100%; max-width:420px; min-height:110px; }
+  .bird-letters{ font-family:'Amiri Quran', serif; font-size:34px; direction:rtl; position:relative; display:inline-block; }
+  .bird-letter{ display:inline-block; position:relative; }
+  .bird-emoji{ position:absolute; font-size:28px; transition: left .6s ease, top .6s ease; transform:translate(-50%,-140%); pointer-events:none; }
+  .bird-choices{ display:flex; gap:14px; justify-content:center; margin-top:10px; }
+  .bird-choices button{ font-size:16px; font-weight:800; padding:12px 20px; border-radius:14px; border:none; cursor:pointer; color:#fff; }
+  .bird-choices .yes{ background: var(--green); color:#0c2a1c; }
+  .bird-choices .no{ background: var(--red); }
+
+  /* Mission 5: flip card */
+  .flip-card{ width:min(90%,360px); height:180px; perspective:1000px; cursor:pointer; }
+  .flip-card-inner{ position:relative; width:100%; height:100%; transition: transform .6s; transform-style:preserve-3d; }
+  .flip-card.flipped .flip-card-inner{ transform: rotateY(180deg); }
+  .flip-front, .flip-back{ position:absolute; inset:0; backface-visibility:hidden; border-radius:18px;
+    display:flex; align-items:center; justify-content:center; padding:14px; font-family:'Amiri Quran', serif; font-size:30px;
+    background: rgba(255,255,255,.07); border:2px solid rgba(255,209,102,.4); }
+  .flip-back{ transform: rotateY(180deg); }
+  .flip-back .found-letter{ color: var(--red); text-decoration: underline wavy var(--red); }
+
+  .shake{ animation: shakeit .35s ease; }
+  @keyframes shakeit{ 0%,100%{ transform: translateX(0); } 20%{ transform: translateX(-8px);} 40%{ transform: translateX(8px);} 60%{ transform: translateX(-6px);} 80%{ transform: translateX(6px);} }
+
+  .score-pop{ position:fixed; z-index:30; font-size:20px; font-weight:900; color:var(--gold-bright); pointer-events:none;
+    animation: scorepop 1s ease forwards; text-shadow: 0 0 8px rgba(255,209,102,.6); }
+  @keyframes scorepop{ 0%{ transform: translate(-50%,-50%) scale(0.6); opacity:0; } 20%{ transform: translate(-50%,-90%) scale(1.1); opacity:1; } 100%{ transform: translate(-50%,-160%) scale(1); opacity:0; } }
+
+  .mission-complete-overlay{ position:fixed; inset:0; z-index:50; display:none; align-items:center; justify-content:center;
+    background: rgba(10,6,2,.82); backdrop-filter: blur(4px); text-align:center; }
+  .mission-complete-overlay.show{ display:flex; }
+  .mission-complete-box{ animation: mcpop .5s ease; }
+  @keyframes mcpop{ from{ transform:scale(.6); opacity:0;} to{ transform:scale(1); opacity:1;} }
+  .mission-complete-box .big{ font-size:40px; }
+  .mission-complete-box h3{ font-size:24px; color:var(--gold-bright); margin:10px 0 4px; }
+  .mission-complete-box p{ font-size:13px; color:#dcc79a; }
+
+  /* ===== Finish ===== */
+  #finish{ align-items:center; justify-content:center; text-align:center; padding:30px 16px; overflow-y:auto;
+    background: radial-gradient(ellipse at 50% 15%, #3a2717, #1a1109 65%); }
+  .finish-title{ font-size:clamp(22px,6vw,30px); font-weight:900; margin-bottom:8px;}
+  .finish-msg{ font-size:15px; color:var(--gold-bright); font-weight:700; margin-bottom:20px; max-width:420px;}
+  .result-table{ width:100%; max-width:400px; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.15); border-radius:16px; padding:6px 18px; margin-bottom:16px; }
+  .result-row{ display:flex; justify-content:space-between; padding:10px 0; font-size:14px; border-bottom:1px solid rgba(255,255,255,.08);}
+  .result-row:last-child{ border-bottom:none; }
+  .result-row b{ color:#fff; font-size:16px; }
+  .wrong-list{ font-size:12.5px; color:#f2b8b8; }
+  .best-score{ font-size:13px; color:var(--gold-bright); margin-bottom:16px; font-weight:700; }
+
+  @media (min-width:700px){ .btn{ font-size:17px; padding:16px 28px; } }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ===================== WELCOME ===================== -->
+  <div class="screen active" id="welcome">
+    <div class="welcome-content">
+      <div class="astro-icon">🔍📖</div>
+      <h1 class="bismillah">به نام خدا</h1>
+      <div class="school-info">
+        <div><b>آموزگار:</b> خانم مرادنژاد</div>
+        <div><b>مدرسه:</b> دبستان پسرانه امام رضا (ع)</div>
+        <div><b>کلاس:</b> ۵/۳</div>
+      </div>
+      <h2 class="game-title">کارآگاهان قرآنی<br>۵ مأموریت</h2>
+      <p class="game-desc">تو یک کارآگاه قرآنی هستی! در ۵ مأموریت مختلف، حروف ناخوانا را کشف کن.</p>
+      <div class="mission-chips">
+        <span class="mission-chip" style="background:var(--m1)">۱ حرف رو بزن</span>
+        <span class="mission-chip" style="background:var(--m2)">۲ پیدا کن</span>
+        <span class="mission-chip" style="background:var(--m3)">۳ آهنگ حروف</span>
+        <span class="mission-chip" style="background:var(--m4)">۴ پرنده</span>
+        <span class="mission-chip" style="background:var(--m5)">۵ کارت‌ها</span>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="startGame()">🔍 شروع مأموریت</button>
+        <button class="btn btn-secondary" onclick="openStudy('welcome')">📚 مطالعه‌ی درس‌نامه</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== STUDY ===================== -->
+  <div class="screen" id="study">
+    <div class="study-nav">
+      <button data-sec="s1" class="active" onclick="showStudySection('s1')">حروف ناخوانا چیست؟</button>
+      <button data-sec="s2" onclick="showStudySection('s2')">نمونه عبارت‌ها</button>
+      <button data-sec="s3" onclick="showStudySection('s3')">پیام قرآنی</button>
+      <button data-sec="s4" onclick="showStudySection('s4')">پیام امام علی (ع)</button>
+      <button onclick="backFromStudy()" style="margin-right:6px;">↩️ بازگشت</button>
+      <button onclick="startGame()">🔍 شروع بازی</button>
+    </div>
+    <div class="study-body">
+      <div class="study-section active" id="s1">
+        <div class="study-h">حروف ناخوانا چیست؟</div>
+        <div class="rule-card"><h4>الف بعد از واو جمع</h4><div class="arabic">فَأَوْحَی</div><p>گاهی بعد از حرف «واو»، یک الف نوشته می‌شود که خوانده نمی‌شود.</p></div>
+        <div class="rule-card"><h4>پایه‌ی همزه</h4><div class="arabic">إِلَی</div><p>بعضی حروف فقط جای همزه را نگه می‌دارند و خودشان خوانده نمی‌شوند.</p></div>
+        <div class="rule-card"><h4>پایه‌ی الف کوچک</h4><div class="arabic">لِئُنذِرَ</div><p>الف کوچک بالای بعضی حروف، صدای خودش را ندارد.</p></div>
+        <div class="rule-card"><h4>الف بعد از نون</h4><div class="arabic">عِبَادِیَ</div><p>در برخی کلمات، حرفی بعد از حرکت می‌آید ولی تلفظ نمی‌شود.</p></div>
+      </div>
+      <div class="study-section" id="s2">
+        <div class="study-h">نمونه عبارت‌های قرآنی</div>
+        <div class="phrase-card"><div class="arabic">فَ<span class="bad">أَ</span>وْحَی</div><p>حرف ناخوانا با رنگ قرمز مشخص شده است</p></div>
+        <div class="phrase-card"><div class="arabic"><span class="bad">إِ</span>لَی</div><p>پایه‌ی همزه در ابتدای کلمه</p></div>
+        <div class="phrase-card"><div class="arabic">لِ<span class="bad">ئُ</span>نذِرَ بِهِ فُ<span class="bad">ؤَ</span>ادَکَ</div><p>دو حرف ناخوانا در یک عبارت</p></div>
+        <div class="phrase-card"><div class="arabic">عِبَادِ<span class="bad">یَ</span></div><p>حرف پایانی، خوانده نمی‌شود</p></div>
+        <div class="phrase-card"><div class="arabic"><span class="bad">إِ</span>نَّ هَذَا الْقُرْ<span class="bad">آ</span>نَ</div><p>همزه و الف در یک عبارت</p></div>
+      </div>
+      <div class="study-section" id="s3">
+        <div class="study-h">پیام قرآنی — سوره‌ی اسراء، آیه‌ی ۹</div>
+        <div class="verse-block">
+          <div class="arabic">إِنَّ هَذَا الْقُرْآنَ یَهْدِی لِلَّتِی هِیَ أَقْوَمُ</div>
+          <div class="translation">«این قرآن به درست‌ترین راه و روش، هدایت می‌کند»</div>
+        </div>
+        <div class="points-grid">
+          <div class="point-card">🌱 راه درست زندگی</div>
+          <div class="point-card">💗 آرامش دل</div>
+          <div class="point-card">✨ اخلاق نیکو</div>
+          <div class="point-card">🏆 موفقیت در دنیا و آخرت</div>
+        </div>
+      </div>
+      <div class="study-section" id="s4">
+        <div class="study-h">پیام‌های امام علی (ع) درباره‌ی قرآن</div>
+        <div class="quote-card"><p>«قرآن را نیکو و زیبا بخوانید»</p><span>امام علی (ع)</span></div>
+        <div class="quote-card"><p>«قرآن را با دل بخوانیم، نه فقط با زبان»</p><span>امام علی (ع)</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== GAME ===================== -->
+  <div class="screen" id="game">
+    <canvas id="particleCanvas"></canvas>
+    <div class="hud">
+      <div class="hud-left">
+        <div class="hearts" id="heartsDisplay">❤️❤️❤️❤️❤️❤️</div>
+        <div class="vcount" id="vCountDisplay">عبارت ۰ از ۱۰</div>
+      </div>
+      <div class="hud-mid">
+        <div class="score-val" id="scoreDisplay">۰</div>
+        <div class="score-label">امتیاز</div>
+      </div>
+      <div class="hud-right"><button onclick="openStudy('game')">📚</button></div>
+    </div>
+    <div class="mission-badge" id="missionBadge">مأموریت ۱ از ۵</div>
+    <div class="timer-wrap"><div class="timer-fill" id="timerFill"></div></div>
+    <div class="progress-wrap"><div class="progress-fill" id="progressFill"></div></div>
+
+    <div class="mission-stage" id="missionStage"></div>
+  </div>
+
+  <div class="mission-complete-overlay" id="missionCompleteOverlay">
+    <div class="mission-complete-box">
+      <div class="big">🎉</div>
+      <h3 id="missionCompleteTitle">مأموریت ۱ کامل شد!</h3>
+      <p>آماده شو برای مأموریت بعدی...</p>
+    </div>
+  </div>
+
+  <!-- ===================== FINISH ===================== -->
+  <div class="screen" id="finish">
+    <div>
+      <div style="font-size:52px;">🔍</div>
+      <div class="finish-title">پایان کارآگاهی</div>
+      <div class="finish-msg" id="finishMsg"></div>
+      <div class="result-table" id="resultTable"></div>
+      <div class="best-score" id="bestScore"></div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="startGame()">🔄 شروع مجدد</button>
+        <button class="btn btn-secondary" onclick="goHome()">🏠 بازگشت به خانه</button>
+        <button class="btn btn-ghost" onclick="openStudy('finish')">📚 درس‌نامه</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ======================================================
+   کارآگاهان قرآنی — ۵ مأموریت
+====================================================== */
+
+/* ---------- صداها ---------- */
+let audioCtx=null;
+function ac(){ if(!audioCtx){ audioCtx = new (window.AudioContext||window.webkitAudioContext)(); } return audioCtx; }
+function tone(freq,dur,type='sine',vol=0.12,delay=0){
+  try{
+    const ctx=ac(); const o=ctx.createOscillator(), g=ctx.createGain();
+    o.type=type; o.frequency.value=freq; o.connect(g); g.connect(ctx.destination);
+    const t0=ctx.currentTime+delay;
+    g.gain.setValueAtTime(0.0001,t0);
+    g.gain.exponentialRampToValueAtTime(vol,t0+0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001,t0+dur);
+    o.start(t0); o.stop(t0+dur+0.02);
+  }catch(e){}
+}
+function soundFind(){ tone(880,0.12,'sine',0.11); tone(1320,0.1,'sine',0.09,0.06); }
+function soundWrong(){ tone(180,0.25,'sawtooth',0.11); }
+function soundAllFound(){ [660,880,1100].forEach((f,i)=>tone(f,0.15,'triangle',0.12,i*0.1)); }
+function soundTick(){ tone(1000,0.06,'square',0.06); }
+function soundMissionDone(){ [523,659,784].forEach((f,i)=>tone(f,0.18,'triangle',0.13,i*0.12)); }
+function soundWin(){ [523,659,784,1046].forEach((f,i)=>tone(f,0.22,'triangle',0.12,i*0.15)); }
+
+/* ---------- توابع صفحه ---------- */
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+let cameFrom='welcome';
+function openStudy(from){ cameFrom=from; showScreen('study'); showStudySection('s1'); }
+function backFromStudy(){
+  if(cameFrom==='game' && gameRunning){ showScreen('game'); }
+  else if(cameFrom==='finish'){ showScreen('finish'); }
+  else { showScreen('welcome'); }
+}
+function goHome(){ gameRunning=false; showScreen('welcome'); }
+function showStudySection(id){
+  document.querySelectorAll('.study-section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.study-nav button[data-sec]').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  const btn = document.querySelector(`.study-nav button[data-sec="${id}"]`);
+  if(btn) btn.classList.add('active');
+}
+const fa = n => String(n).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
+
+/* ---------- داده‌ی عبارات قرآنی (علامت [ ] = حرف ناخوانا) ---------- */
+const versesRaw = [
+  { text: "فَ[أَ]وْحَی", meaning: "پس وحی کرد" },
+  { text: "[إِ]لَی", meaning: "به سوی" },
+  { text: "لِ[ئُ]نذِرَ بِهِ فُ[ؤَ]ادَکَ", meaning: "تا با آن دل تو را بیم دهم" },
+  { text: "عِبَادِ[یَ]", meaning: "بندگانم" },
+  { text: "لِ[یَ]دَّبَّرُ[وا]", meaning: "تا تدبر کنند" },
+  { text: "[إِ]نَّ هَذَا الْقُرْ[آ]نَ", meaning: "همانا این قرآن" },
+  { text: "یَهْد[ِی] لِلَّت[ِی]", meaning: "هدایت می‌کند به آن" },
+  { text: "هِیَ [أَ]قْوَمُ", meaning: "که آن درست‌تر است" },
+  { text: "[أَ]شْکُرُ لِلَّهِ", meaning: "شکر می‌کنم برای خدا" },
+  { text: "وَقَض[َی] رَبُّکَ", meaning: "و حکم کرد پروردگارت" }
+];
+function parseVerse(raw, meaning){
+  const chars=[]; const nonReadable=[]; let inBracket=false;
+  for(const ch of raw){
+    if(ch==='['){ inBracket=true; continue; }
+    if(ch===']'){ inBracket=false; continue; }
+    chars.push(ch);
+    if(inBracket) nonReadable.push(chars.length-1);
+  }
+  return {chars, nonReadable, meaning};
+}
+const verses = versesRaw.map(v=>parseVerse(v.text, v.meaning));
+
+const MISSION_NAMES = ['حرف ناخوانا رو بزن!','دوتا حرف پیدا کن','آهنگ حروف','پرنده و حروف','کارت‌های حروف'];
+const MISSION_COLORS = ['var(--m1)','var(--m2)','var(--m3)','var(--m4)','var(--m5)'];
+const MISSION_SCORE = [50,50,50,30,20];
+const MISSION_TIME = [60,30,30,30,60]; // مأموریت ۵: زمان کل برای هر دو کارت
+
+/* ---------- وضعیت کلی بازی ---------- */
+const MAX_LIVES = 6;
+let gameRunning=false;
+let score=0, lives=MAX_LIVES, verseGlobalIndex=0, missionsCompleted=0;
+let missionNum=1, missionVerses=[], missionVerseLocalIdx=0, currentVerse=null;
+let foundIdx=new Set();
+let wrongCount=0, wrongVerses=[];
+let lastTime=0, animationId=null;
+let timerValue=0, timerMax=60, timerActive=false;
+let m2Target=null; // ایندکس حرف هدف در مأموریت ۲/۳
+let birdIdx=0; // مأموریت ۴
+let cardFlipped=false; // مأموریت ۵
+
+/* ---------- کانواس ذرات ---------- */
+const pCanvas=document.getElementById('particleCanvas');
+const pCtx=pCanvas.getContext('2d');
+let PW=0,PH=0,PDPR=1;
+function resizeParticleCanvas(){
+  PDPR=Math.min(window.devicePixelRatio||1,2);
+  PW=pCanvas.clientWidth; PH=pCanvas.clientHeight;
+  pCanvas.width=PW*PDPR; pCanvas.height=PH*PDPR;
+  pCtx.setTransform(PDPR,0,0,PDPR,0,0);
+}
+window.addEventListener('resize', resizeParticleCanvas);
+let particles=[];
+function spawnParticles(x,y,color,n){
+  for(let i=0;i<n;i++) particles.push({x,y,vx:(Math.random()-0.5)*160, vy:(Math.random()-0.5)*160-40, life:0.7, color});
+}
+function updateAndDrawParticles(dt){
+  pCtx.clearRect(0,0,PW,PH);
+  for(let i=particles.length-1;i>=0;i--){
+    const p=particles[i];
+    p.x+=p.vx*dt; p.y+=p.vy*dt; p.vy+=200*dt; p.life-=dt;
+    if(p.life<=0){ particles.splice(i,1); continue; }
+    pCtx.globalAlpha=Math.max(0,p.life/0.7);
+    pCtx.fillStyle=p.color;
+    pCtx.beginPath(); pCtx.arc(p.x,p.y,3,0,Math.PI*2); pCtx.fill();
+  }
+  pCtx.globalAlpha=1;
+}
+function spawnScorePopup(x,y,text,color){
+  const p=document.createElement('div');
+  p.className='score-pop'; p.textContent=text; p.style.left=x+'px'; p.style.top=y+'px';
+  if(color) p.style.color=color;
+  document.getElementById('game').appendChild(p);
+  setTimeout(()=>p.remove(),1000);
+}
+function screenShake(){
+  const stage=document.getElementById('game');
+  stage.classList.remove('shake'); void stage.offsetWidth; stage.classList.add('shake');
+}
+
+/* ---------- شروع بازی ---------- */
+function startGame(){
+  showScreen('game');
+  requestAnimationFrame(()=>{
+    resizeParticleCanvas();
+    score=0; lives=MAX_LIVES; verseGlobalIndex=0; missionsCompleted=0;
+    wrongCount=0; wrongVerses=[]; particles=[];
+    updateHUD();
+    gameRunning=true;
+    lastTime=performance.now();
+    if(animationId) cancelAnimationFrame(animationId);
+    animationId=requestAnimationFrame(gameLoop);
+    beginMission(1);
+  });
+}
+
+function beginMission(n){
+  missionNum=n;
+  document.getElementById('game').style.setProperty('--mission-color', MISSION_COLORS[n-1]);
+  document.getElementById('missionBadge').textContent = `مأموریت ${fa(n)} از ۵: ${MISSION_NAMES[n-1]}`;
+  document.getElementById('missionBadge').style.background = MISSION_COLORS[n-1];
+  missionVerses = verses.slice((n-1)*2, n*2);
+  missionVerseLocalIdx = 0;
+  if(n===5){ timerMax = MISSION_TIME[4]; timerValue = timerMax; timerActive = true; }
+  loadMissionVerse();
+}
+
+function loadMissionVerse(){
+  currentVerse = missionVerses[missionVerseLocalIdx];
+  verseGlobalIndex++;
+  foundIdx = new Set();
+  document.getElementById('vCountDisplay').textContent = `عبارت ${fa(verseGlobalIndex)} از ۱۰`;
+  document.getElementById('progressFill').style.width = (verseGlobalIndex/10*100)+'%';
+
+  if(missionNum!==5){
+    timerMax = MISSION_TIME[missionNum-1];
+    timerValue = timerMax;
+    timerActive = true;
+  }
+  renderCurrentMission();
+  updateHUD();
+}
+
+/* ---------- رندر بر اساس مأموریت فعلی ---------- */
+function renderCurrentMission(){
+  const stage = document.getElementById('missionStage');
+  stage.innerHTML='';
+  if(missionNum===1) renderMission1(stage);
+  else if(missionNum===2) renderMission2(stage);
+  else if(missionNum===3) renderMission3(stage);
+  else if(missionNum===4) renderMission4(stage);
+  else renderMission5(stage);
+}
+
+function verseSolvedInMission(){
+  missionVerseLocalIdx++;
+  if(missionVerseLocalIdx < missionVerses.length){
+    loadMissionVerse();
+  } else {
+    missionComplete();
+  }
+}
+
+function missionComplete(){
+  missionsCompleted++;
+  timerActive=false;
+  soundMissionDone();
+  const ov = document.getElementById('missionCompleteOverlay');
+  document.getElementById('missionCompleteTitle').textContent = `مأموریت ${fa(missionNum)} کامل شد!`;
+  ov.classList.add('show');
+  setTimeout(()=>{
+    ov.classList.remove('show');
+    if(lives<=0) return;
+    if(missionNum<5) beginMission(missionNum+1);
+    else endGame();
+  }, 3000);
+}
+
+function loseLife(amount){
+  lives -= amount;
+  updateHUD();
+  if(lives<=0){
+    timerActive=false;
+    setTimeout(()=>endGame(), 400);
+    return true;
+  }
+  return false;
+}
+function markWrongVerse(){
+  wrongCount++;
+  const label = currentVerse.chars.join('');
+  if(!wrongVerses.includes(label)) wrongVerses.push(label);
+}
+
+/* ================= مأموریت ۱: حرف ناخوانا رو بزن ================= */
+function renderMission1(stage){
+  let html = `<div class="mission-hint">روی حروف زرد (ناخوانا) بزن! از حروف سفید دوری کن.</div>
+  <div class="m1-letters">`;
+  currentVerse.chars.forEach((ch,i)=>{
+    const isTarget = currentVerse.nonReadable.includes(i);
+    html += `<button class="m1-letter ${isTarget?'target':'normal'}" data-idx="${i}" onclick="m1Click(${i}, this)">${ch}</button>`;
+  });
+  html += `</div><div class="verse-meaning">${currentVerse.meaning}</div><div class="verse-feedback" id="verseFeedback"></div>`;
+  stage.innerHTML = html;
+}
+function m1Click(i, el){
+  if(!gameRunning || foundIdx.has(i)) return;
+  const isTarget = currentVerse.nonReadable.includes(i);
+  if(isTarget){
+    foundIdx.add(i);
+    el.classList.add('done');
+    score += MISSION_SCORE[0];
+    updateHUD();
+    soundFind();
+    const r = el.getBoundingClientRect();
+    spawnParticles(r.left+r.width/2 - pCanvas.getBoundingClientRect().left, r.top - pCanvas.getBoundingClientRect().top, '#ffd166', 12);
+    spawnScorePopup(r.left+r.width/2, r.top, '+۵۰', '#ffd166');
+    if(foundIdx.size >= currentVerse.nonReadable.length) verseSolvedInMission();
+  } else {
+    el.classList.remove('wrongflash'); void el.offsetWidth; el.classList.add('wrongflash');
+    soundWrong(); screenShake(); markWrongVerse();
+    loseLife(1);
+  }
+}
+
+/* ================= مأموریت ۲: دوتا حرف پیدا کن ================= */
+function buildOptions(correctChar){
+  const pool = currentVerse.chars.filter((ch,i)=>!currentVerse.nonReadable.includes(i) && ch.trim()!=='');
+  const uniquePool = [...new Set(pool)].filter(c=>c!==correctChar);
+  let options = [correctChar];
+  while(options.length<4 && uniquePool.length){
+    const idx = Math.floor(Math.random()*uniquePool.length);
+    options.push(uniquePool.splice(idx,1)[0]);
+  }
+  const fallback = ['ب','ت','ن','م','س','ک','ل'];
+  let fi=0;
+  while(options.length<4){ const c=fallback[fi++%fallback.length]; if(!options.includes(c)) options.push(c); }
+  return options.sort(()=>Math.random()-0.5);
+}
+function renderMission2(stage){
+  const remaining = currentVerse.nonReadable.filter(i=>!foundIdx.has(i));
+  m2Target = remaining[0];
+  const correctChar = currentVerse.chars[m2Target];
+  const opts = buildOptions(correctChar);
+  let html = `<div class="mission-hint">عبارت رو بخون و حرف ناخوانا رو از بین گزینه‌ها پیدا کن</div>
+    <div class="verse-display">${currentVerse.chars.join('')}</div>
+    <div class="opt-grid">`;
+  opts.forEach(o=>{
+    html += `<button class="opt-btn" onclick="m2Choose('${o}', this)">${o}</button>`;
+  });
+  html += `</div><div class="verse-feedback" id="verseFeedback"></div>`;
+  stage.innerHTML = html;
+}
+function m2Choose(char, el){
+  if(!gameRunning) return;
+  const correctChar = currentVerse.chars[m2Target];
+  document.querySelectorAll('.opt-btn').forEach(b=>b.style.pointerEvents='none');
+  if(char===correctChar){
+    el.classList.add('correct');
+    foundIdx.add(m2Target);
+    score += MISSION_SCORE[1];
+    updateHUD(); soundFind();
+    const r = el.getBoundingClientRect();
+    spawnScorePopup(r.left+r.width/2, r.top, '+۵۰', '#ffd166');
+    setTimeout(()=>{
+      if(foundIdx.size >= currentVerse.nonReadable.length) verseSolvedInMission();
+      else renderMission2(document.getElementById('missionStage'));
+    }, 700);
+  } else {
+    el.classList.add('wrong');
+    soundWrong(); screenShake(); markWrongVerse();
+    const died = loseLife(1);
+    setTimeout(()=>{
+      if(!died) renderMission2(document.getElementById('missionStage'));
+    }, 700);
+  }
+}
+
+/* ================= مأموریت ۳: آهنگ حروف ================= */
+function renderMission3(stage){
+  const remaining = currentVerse.nonReadable.filter(i=>!foundIdx.has(i));
+  m2Target = remaining[0];
+  let html = `<div class="mission-hint">به آهنگ حروف گوش بده، بعد حرف ناخوانا رو انتخاب کن</div>
+    <div class="verse-display" id="tourDisplay">`;
+  currentVerse.chars.forEach((ch,i)=>{ html += `<span class="tour-letter" data-idx="${i}">${ch}</span>`; });
+  html += `</div><div class="opt-grid" id="m3Options" style="visibility:hidden;"></div><div class="verse-feedback" id="verseFeedback"></div>`;
+  stage.innerHTML = html;
+  playLetterTour();
+}
+function playLetterTour(){
+  const spans = document.querySelectorAll('#tourDisplay .tour-letter');
+  let i=0;
+  function step(){
+    spans.forEach(s=>s.classList.remove('tour-active'));
+    if(i<spans.length){
+      spans[i].classList.add('tour-active');
+      tone(500+i*40, 0.1, 'sine', 0.06);
+      i++;
+      setTimeout(step, 260);
+    } else {
+      spans.forEach(s=>s.classList.remove('tour-active'));
+      showM3Options();
+    }
+  }
+  step();
+}
+function showM3Options(){
+  const correctChar = currentVerse.chars[m2Target];
+  const opts = buildOptions(correctChar);
+  const wrap = document.getElementById('m3Options');
+  if(!wrap) return;
+  wrap.style.visibility='visible';
+  wrap.innerHTML = opts.map(o=>`<button class="opt-btn" onclick="m3Choose('${o}', this)">${o}</button>`).join('');
+}
+function m3Choose(char, el){
+  if(!gameRunning) return;
+  const correctChar = currentVerse.chars[m2Target];
+  document.querySelectorAll('#m3Options .opt-btn').forEach(b=>b.style.pointerEvents='none');
+  if(char===correctChar){
+    el.classList.add('correct');
+    foundIdx.add(m2Target);
+    score += MISSION_SCORE[2];
+    updateHUD(); soundFind();
+    const r = el.getBoundingClientRect();
+    spawnScorePopup(r.left+r.width/2, r.top, '+۵۰', '#ffd166');
+    setTimeout(()=>{
+      if(foundIdx.size >= currentVerse.nonReadable.length) verseSolvedInMission();
+      else renderMission3(document.getElementById('missionStage'));
+    }, 700);
+  } else {
+    el.classList.add('wrong');
+    soundWrong(); screenShake(); markWrongVerse();
+    const died = loseLife(1);
+    setTimeout(()=>{ if(!died) renderMission3(document.getElementById('missionStage')); }, 700);
+  }
+}
+
+/* ================= مأموریت ۴: پرنده و حروف ================= */
+function renderMission4(stage){
+  birdIdx = 0;
+  let html = `<div class="mission-hint">پرنده روی یه حرف می‌شینه؛ تشخیص بده ناخواناست یا درست</div>
+    <div class="bird-wrap">
+      <div class="bird-letters" id="birdLetters">`;
+  currentVerse.chars.forEach((ch,i)=>{ html += `<span class="bird-letter" data-idx="${i}">${ch}</span>`; });
+  html += `</div><div class="bird-emoji" id="birdEmoji">🐦</div></div>
+    <div class="bird-choices">
+      <button class="yes" onclick="m4Answer(true, this)">✅ ناخواناست</button>
+      <button class="no" onclick="m4Answer(false, this)">❌ درسته</button>
+    </div>
+    <div class="verse-feedback" id="verseFeedback"></div>`;
+  stage.innerHTML = html;
+  positionBird();
+}
+function positionBird(){
+  const letters = document.querySelectorAll('#birdLetters .bird-letter');
+  const wrap = document.querySelector('.bird-wrap');
+  if(!letters.length || birdIdx>=letters.length) return;
+  const target = letters[birdIdx];
+  const tr = target.getBoundingClientRect();
+  const wr = wrap.getBoundingClientRect();
+  const bird = document.getElementById('birdEmoji');
+  bird.style.left = (tr.left - wr.left + tr.width/2) + 'px';
+  bird.style.top = (tr.top - wr.top) + 'px';
+}
+function m4Answer(saidNonReadable, el){
+  if(!gameRunning) return;
+  const letters = document.querySelectorAll('#birdLetters .bird-letter');
+  if(birdIdx>=letters.length) return;
+  const isActuallyNonReadable = currentVerse.nonReadable.includes(birdIdx);
+  document.querySelectorAll('.bird-choices button').forEach(b=>b.style.pointerEvents='none');
+  const correct = (saidNonReadable===isActuallyNonReadable);
+  const fb = document.getElementById('verseFeedback');
+  if(correct){
+    score += MISSION_SCORE[3];
+    updateHUD(); soundFind();
+    fb.textContent='✅ درست تشخیص دادی!'; fb.style.color='#3ee394';
+    const r = el.getBoundingClientRect();
+    spawnScorePopup(r.left+r.width/2, r.top, '+۳۰', '#ffd166');
+  } else {
+    fb.textContent='❌ اشتباه بود'; fb.style.color='#e14b4b';
+    soundWrong(); screenShake(); markWrongVerse();
+  }
+  const died = !correct && loseLife(1);
+  setTimeout(()=>{
+    if(died) return;
+    birdIdx++;
+    if(birdIdx >= letters.length){ verseSolvedInMission(); }
+    else {
+      document.querySelectorAll('.bird-choices button').forEach(b=>b.style.pointerEvents='auto');
+      fb.textContent='';
+      positionBird();
+    }
+  }, 700);
+}
+
+/* ================= مأموریت ۵: کارت‌های حروف ================= */
+function renderMission5(stage){
+  cardFlipped=false;
+  let backHtml = currentVerse.chars.map((ch,i)=>{
+    return currentVerse.nonReadable.includes(i) ? `<span class="found-letter">${ch}</span>` : ch;
+  }).join('');
+  let html = `<div class="mission-hint">کارت رو لمس کن تا جواب رو ببینی</div>
+    <div class="flip-card" id="flipCard" onclick="flipCard()">
+      <div class="flip-card-inner">
+        <div class="flip-front">${currentVerse.chars.join('')}</div>
+        <div class="flip-back">${backHtml}</div>
+      </div>
+    </div>
+    <button class="btn btn-primary" id="confirmCardBtn" style="display:none;" onclick="confirmCard()">✅ درست تشخیص دادم (+۲۰)</button>
+    <div class="verse-meaning">${currentVerse.meaning}</div>
+    <div class="verse-feedback" id="verseFeedback"></div>`;
+  stage.innerHTML = html;
+}
+function flipCard(){
+  if(cardFlipped) return;
+  cardFlipped=true;
+  document.getElementById('flipCard').classList.add('flipped');
+  document.getElementById('confirmCardBtn').style.display='inline-block';
+  soundFind();
+}
+function confirmCard(){
+  score += MISSION_SCORE[4];
+  updateHUD();
+  soundAllFound();
+  const btn = document.getElementById('confirmCardBtn');
+  const r = btn.getBoundingClientRect();
+  spawnScorePopup(r.left+r.width/2, r.top, '+۲۰', '#ffd166');
+  btn.style.display='none';
+  setTimeout(()=>{ verseSolvedInMission(); }, 500);
+}
+
+/* ---------- HUD و تایمر ---------- */
+function updateHUD(){
+  document.getElementById('heartsDisplay').textContent = '❤️'.repeat(Math.max(0,lives)) + '🖤'.repeat(Math.max(0, MAX_LIVES-Math.max(0,lives)));
+  document.getElementById('scoreDisplay').textContent = fa(score);
+}
+function updateTimerUI(){
+  const pct = Math.max(0, timerValue/timerMax*100);
+  const fill = document.getElementById('timerFill');
+  fill.style.width = pct+'%';
+  if(timerValue<=15){ fill.style.background = timerValue<=5 ? '#e14b4b' : '#ffd166'; }
+  else { fill.style.background = '#3ee394'; }
+}
+function timeOut(){
+  timerActive=false;
+  markWrongVerse();
+  const died = loseLife(1);
+  const fb = document.getElementById('verseFeedback');
+  if(fb){ fb.textContent='⏰ وقت تمام شد!'; fb.style.color='#e14b4b'; }
+  soundWrong();
+  if(died) return;
+  setTimeout(()=>{
+    if(missionNum===5){
+      // در مأموریت ۵ زمان کل است؛ مستقیم به مأموریت بعد برو
+      missionComplete();
+    } else {
+      verseSolvedInMission();
+    }
+  }, 900);
+}
+
+/* ---------- پایان بازی ---------- */
+function endGame(){
+  gameRunning=false; timerActive=false;
+  if(animationId) cancelAnimationFrame(animationId);
+
+  const best = parseInt(localStorage.getItem('detective5_best_score')||'0');
+  const isNewBest = score>best;
+  if(isNewBest) localStorage.setItem('detective5_best_score', String(score));
+  const bestFinal = Math.max(best,score);
+
+  let msg;
+  if(score>=1000) msg='🏆 کارآگاه قرآنی حرفه‌ای! تو همه‌ی حروف ناخوانا رو کشف کردی!';
+  else if(score>=700) msg='🌟 عالی بود! یه کارآگاه ماهر شدی!';
+  else if(score>=400) msg='👏 خوب بود! کمی دیگه تمرین کن.';
+  else msg='💪 تلاش خوبی بود! درس‌نامه رو یه بار دیگه مرور کن.';
+
+  document.getElementById('finishMsg').textContent = msg;
+  document.getElementById('resultTable').innerHTML = `
+    <div class="result-row"><span>امتیاز نهایی</span><b>${fa(score)}</b></div>
+    <div class="result-row"><span>مأموریت‌های کامل‌شده</span><b>${fa(missionsCompleted)} از ۵</b></div>
+    <div class="result-row"><span>عبارت‌های طی‌شده</span><b>${fa(Math.min(verseGlobalIndex,10))} از ۱۰</b></div>
+    <div class="result-row"><span>تعداد اشتباهات</span><b>${fa(wrongCount)}</b></div>
+    <div class="result-row"><span>جان‌های باقی‌مانده</span><b>${fa(Math.max(0,lives))} از ۶</b></div>
+    <div class="result-row wrong-list"><span>عبارت‌هایی که اشتباه زده شد</span><b>${wrongVerses.length? wrongVerses.join('، ') : 'هیچ‌کدام 🎉'}</b></div>
+  `;
+  document.getElementById('bestScore').textContent = isNewBest ? `🎉 رکورد جدید: ${fa(bestFinal)}` : `بهترین امتیاز: ${fa(bestFinal)}`;
+
+  soundWin();
+  showScreen('finish');
+}
+
+/* ---------- حلقه‌ی اصلی ---------- */
+function gameLoop(t){
+  if(!gameRunning){ return; }
+  let dt = Math.min((t-lastTime)/1000, 0.035);
+  lastTime = t;
+
+  if(timerActive){
+    timerValue -= dt;
+    updateTimerUI();
+    if(timerValue>0 && timerValue<=5){
+      const s = Math.ceil(timerValue);
+      if(s !== window.lastTick){ window.lastTick=s; soundTick(); }
+    }
+    if(timerValue<=0){ timerValue=0; timerActive=false; timeOut(); }
+  }
+
+  updateAndDrawParticles(dt);
+  animationId = requestAnimationFrame(gameLoop);
+}
+</script>
+</body>
+</html>
